@@ -247,18 +247,18 @@ function gitea_cleanup_older_prs () {
   local pr_labels=$2
   local is_keep_branch_on_pr_cleanup=$3
   local local_branch_name=$4
+  local reponame=$(basename $(pwd))
 
   older_prs=$(tea pr list \
-    --base "${upstream_branch}" \
+    --repo "${reponame}" \
     --state open \
-    --label "${pr_labels}" \
-    --json number,headRefName \
-    --jq '.[]')
+    --output simple \
+    --fields index,head
 
   for older_pr in $older_prs
   do
-    branch_name=$(echo "$older_pr" | jq -r .headRefName)
-    pr_number=$(echo "$older_pr" | jq -r .number)
+    pr_number=$(echo "$older_pr" | cut -d " " -f 1)
+    branch_name=$(echo "$older_pr" | cut -d " " -f 2)
 
     if [ "$branch_name" == "$local_branch_name" ] ; then
       warn "local branch name equals remote pr branch name ${local_branch_name}. Skipping pr cleanup for this branch"
@@ -266,13 +266,13 @@ function gitea_cleanup_older_prs () {
     fi
 
     if [ "$is_keep_branch_on_pr_cleanup" == true ] ; then
-      tea comment $pr_number "[actions-template-sync] :construction_worker: automatically closed because there is a new open PR. Branch is kept alive" 
-      tea pr close $pr_number
+      tea comment --repo ${reponame} ${pr_number} "[actions-template-sync] :construction_worker: automatically closed because there is a new open PR. Branch is kept alive" 
+      tea pr --repo ${reponame} close $pr_number
       debug "Closed PR #${older_pr} but kept the branch"
     else
-      tea comment $pr_number "[actions-template-sync] :construction_worker: automatically closed because there is a new open PR" 
-      tea pr close $pr_number
-      tea pr clean $pr_number
+      tea comment --repo ${reponame} $pr_number "[actions-template-sync] :construction_worker: automatically closed because there is a new open PR" 
+      tea pr --repo ${reponame} close $pr_number
+      tea pr --repo ${reponame} clean $pr_number
       debug "Closed PR #${older_pr}"
     fi
   done
@@ -346,15 +346,16 @@ function eventual_create_labels () {
 #######################################
 function gitea_create_labels () {
   local pr_labels=$1
+  local reponame=$(basename $(pwd))
 
   readarray -t labels_array < <(awk -F',' '{ for( i=1; i<=NF; i++ ) print $i }' <<<"${pr_labels}")
-  readarray -t search_result < <(tea label list --output csv | cut -d "," -f 3 | tr -d \" | tail -n +2)
+  readarray -t search_result < <(tea label list --repo "${reponame}" --output csv | cut -d "," -f 3 | tr -d \" | tail -n +2)
   for label in "${labels_array[@]}"
   do
     if [[ $(echo ${search_result[@]} | fgrep -w $label) ]]; then
       info "label '${label}' was found in the repository"
     else
-      reponame=$(basename $(pwd))
+      local reponame=$(basename $(pwd))
       if tea label create --name "${label}" --color "ffaabb" --repo $reponame; then
         info "label '${label}' was missing and has been created"
       else
@@ -445,8 +446,10 @@ function gitea_create_pr() {
   local branch=$3
   local labels=$4
   local reviewers=$5
+  local reponame=$(basename $(pwd))
 
   tea pr create \
+    --repo "${reponame}" \
     --title "${title}" \
     --description "${body}" \
     --base "${branch}" \
