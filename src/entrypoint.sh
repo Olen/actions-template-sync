@@ -57,6 +57,9 @@ if [[$SOURCE_REPO_PROTO == http* ]]; then
 else
   SOURCE_REPO_PREFIX="${SOURCE_REPO_PROTO}://${SOURCE_REPO_HOSTNAME}:${SOURCE_REPO_PORT}/"
 fi
+info $SOURCE_REPO_PROTO
+info $SOURCE_REPO_PREFIX
+
 
 ################################################
 # Functions
