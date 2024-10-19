@@ -29,6 +29,7 @@ fi
 
 if [[ "${IS_TARGET_GITEA}" == 'true' ]]; then
   info "the target repository is located in Gitea."
+  wget https://dl.gitea.com/tea/main/tea-main-linux-amd64 -O /bin/tea
 fi
 
 ############################################
