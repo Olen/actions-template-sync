@@ -187,7 +187,7 @@ elif [[ "${SOURCE_REPO_HOSTNAME}" != "${DEFAULT_REPO_HOSTNAME}" ]]; then
       SOURCE_REPO_USER=${SR[0]}
     done <<< "$SOURCE_REPO_PATH"
     info tea login add --name source --url "${SOURCE_REPO_PREFIX}" --user ${SOURCE_REPO_USER} --password "${GITHUB_TOKEN}" --token "${GITHUB_TOKEN}"
-    tea login add --name source --url "${SOURCE_REPO_PREFIX}" --user ${SOURCE_REPO_USER} --password <<< "${GITHUB_TOKEN}" --token <<< "${GITHUB_TOKEN}"
+    tea login add --name source --url "${SOURCE_REPO_PREFIX}" --user ${SOURCE_REPO_USER} --password "${GITHUB_TOKEN}" --token "${GITHUB_TOKEN}"
   else
     info "the target repository is located in Github."
     gh auth login --git-protocol "https" --hostname "${SOURCE_REPO_HOSTNAME}" --with-token <<< "${GITHUB_TOKEN}"
