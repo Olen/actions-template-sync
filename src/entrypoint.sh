@@ -27,6 +27,10 @@ if [[ -z "${HOME}" ]]; then
   exit 1
 fi
 
+if [[ "${IS_TARGET_GITEA}" == 'true' ]]; then
+  info "the target repository is located in Gitea."
+fi
+
 ############################################
 # Variables
 ############################################
