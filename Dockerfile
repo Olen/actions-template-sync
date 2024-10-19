@@ -6,7 +6,8 @@ FROM alpine:3.20.3 AS prod
 ARG GH_CLI_VER=2.44.1
 
 # TODO(anau) change user
-ARG GITHUB_URL="https://github.com/AndreasAugustin/actions-template-sync"
+# ARG GITHUB_URL="https://github.com/AndreasAugustin/actions-template-sync"
+ARG GITHUB_URL="https://github.com/Olen/actions-template-sync@gitea"
 
 # https://github.com/opencontainers/image-spec/blob/main/annotations.md#pre-defined-annotation-keys
 LABEL org.opencontainers.image.url="${GITHUB_URL}"
@@ -39,7 +40,7 @@ ENTRYPOINT ["/bin/bash", "/bin/entrypoint.sh"]
 FROM prod AS dev
 
 # install packages
-RUN apk add --update --no-cache make zsh tmux vim tig
+RUN apk add --update --no-cache make zsh tmux vim tig tea
 
 # Make zsh your default shell for tmux
 RUN echo "set-option -g default-shell /bin/zsh" >> /root/.tmux.conf
