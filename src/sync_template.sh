@@ -253,7 +253,7 @@ function gitea_cleanup_older_prs () {
     --repo "${reponame}" \
     --state open \
     --output simple \
-    --fields index,head
+    --fields index,head)
 
   for older_pr in $older_prs
   do
