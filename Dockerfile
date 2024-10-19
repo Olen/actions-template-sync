@@ -58,7 +58,7 @@ ENTRYPOINT ["/bin/zsh"]
 FROM node:22.9.0-alpine AS docs
 
 # install packages
-RUN apk add --update --no-cache bash make git zsh curl tmux
+RUN apk add --update --no-cache bash make git zsh curl tmux tea
 
 # Make zsh your default shell for tmux
 RUN echo "set-option -g default-shell /bin/zsh" >> /root/.tmux.conf
