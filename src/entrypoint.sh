@@ -47,8 +47,16 @@ SOURCE_REPO_PORT="${SOURCE_REPO_PORT:-${DEFAULT_REPO_PORT}}"
 GIT_USER_NAME="${GIT_USER_NAME:-${GITHUB_ACTOR}}"
 GIT_USER_EMAIL="${GIT_USER_EMAIL:-github-action@actions-template-sync.noreply.${SOURCE_REPO_HOSTNAME}}"
 
+while IFS='/' read -ra SR; do
+  SOURCE_REPO_USER=${SR[0]}
+done <<< "$SOURCE_REPO_PATH"
+SOURCE_REPO_PASS=$GITHUB_TOKEN
 # In case of ssh template repository this will be overwritten
-SOURCE_REPO_PREFIX="${SOURCE_REPO_PROTO}://${SOURCE_REPO_HOSTNAME}:${SOURCE_REPO_PORT}/"
+if [[$SOURCE_REPO_PROTO = http* ]]; then
+  SOURCE_REPO_PREFIX="${SOURCE_REPO_PROTO}://${SOURCE_REPO_USER}:${SOURCE_REPO_PASS}@${SOURCE_REPO_HOSTNAME}:${SOURCE_REPO_PORT}/"
+else
+  SOURCE_REPO_PREFIX="${SOURCE_REPO_PROTO}://${SOURCE_REPO_HOSTNAME}:${SOURCE_REPO_PORT}/"
+fi
 
 ################################################
 # Functions
@@ -183,16 +191,14 @@ if [[ -n "${SSH_PRIVATE_KEY_SRC}" ]] &>/dev/null; then
 elif [[ "${SOURCE_REPO_HOSTNAME}" != "${DEFAULT_REPO_HOSTNAME}" ]]; then
   if [[ "${IS_TARGET_GITEA}" == 'true' ]]; then
     info "the target repository is located in Gitea."
-    while IFS='/' read -ra SR; do
-      SOURCE_REPO_USER=${SR[0]}
-    done <<< "$SOURCE_REPO_PATH"
-    info tea login add --name source --url "${SOURCE_REPO_PREFIX}" --user ${SOURCE_REPO_USER} --password "${GITHUB_TOKEN}" --token "${GITHUB_TOKEN}"
-    tea login add --name source --url "${SOURCE_REPO_PREFIX}" --user ${SOURCE_REPO_USER} --password "${GITHUB_TOKEN}" --token "${GITHUB_TOKEN}"
+    info tea login add --name source --url "${SOURCE_REPO_PREFIX}" --user ${SOURCE_REPO_USER} --password "${SOURCE_REPO_PASS}" --token "${GITHUB_TOKEN}"
+    tea login add --name source --url "${SOURCE_REPO_PREFIX}" --user ${SOURCE_REPO_USER} --password "${SOURCE_REPO_PASS}" --token "${GITHUB_TOKEN}"
   else
     info "the target repository is located in Github."
     gh auth login --git-protocol "https" --hostname "${SOURCE_REPO_HOSTNAME}" --with-token <<< "${GITHUB_TOKEN}"
   fi
 fi
+
 
 export SOURCE_REPO="${SOURCE_REPO_PREFIX}${SOURCE_REPO_PATH}"
 
