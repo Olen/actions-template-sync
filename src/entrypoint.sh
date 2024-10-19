@@ -52,7 +52,7 @@ while IFS='/' read -ra SR; do
 done <<< "$SOURCE_REPO_PATH"
 SOURCE_REPO_PASS=$GITHUB_TOKEN
 # In case of ssh template repository this will be overwritten
-if [[$SOURCE_REPO_PROTO == http* ]]; then
+if [[ "$SOURCE_REPO_PROTO" =~ ^http* ]]; then
   SOURCE_REPO_PREFIX="${SOURCE_REPO_PROTO}://${SOURCE_REPO_USER}:${SOURCE_REPO_PASS}@${SOURCE_REPO_HOSTNAME}:${SOURCE_REPO_PORT}/"
 else
   SOURCE_REPO_PREFIX="${SOURCE_REPO_PROTO}://${SOURCE_REPO_HOSTNAME}:${SOURCE_REPO_PORT}/"
