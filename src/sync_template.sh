@@ -354,9 +354,8 @@ function gitea_create_labels () {
     if [[ $(echo ${search_result[@]} | fgrep -w $label) ]]; then
       info "label '${label}' was found in the repository"
     else
-      pwd
-      git status
-      if tea label create --name "${label}" --color "ffaabb"; then
+      reponame=$(basename $(pwd))
+      if tea label create --name "${label}" --color "ffaabb" --repo $reponame; then
         info "label '${label}' was missing and has been created"
       else
         warn "label creation did not work. For any reason the former check sometimes is failing"
