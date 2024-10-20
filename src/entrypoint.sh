@@ -201,7 +201,6 @@ elif [[ "${SOURCE_REPO_HOSTNAME}" != "${DEFAULT_REPO_HOSTNAME}" ]]; then
     # tea login add --name source --url "${SOURCE_REPO_PREFIX}" --user ${SOURCE_REPO_USER} --password "${SOURCE_REPO_PASS}" --token "${SOURCE_REPO_TOKEN}"
     info "Adding dest repo ${origin} to tea"
     tea login add --name target --url "${DEST_REPO}" --token "${GITHUB_TOKEN}"
-    sleep 600
   else
     info "the target repository is located in Github."
     gh auth login --git-protocol "https" --hostname "${SOURCE_REPO_HOSTNAME}" --with-token <<< "${GITHUB_TOKEN}"
