@@ -194,8 +194,9 @@ if [[ -n "${SSH_PRIVATE_KEY_SRC}" ]] &>/dev/null; then
 elif [[ "${SOURCE_REPO_HOSTNAME}" != "${DEFAULT_REPO_HOSTNAME}" ]]; then
   if [[ "${IS_TARGET_GITEA}" == 'true' ]]; then
     info "the target repository is located in Gitea."
-    info tea login add --name source --url "${SOURCE_REPO_PREFIX}" --user ${SOURCE_REPO_USER} --password "${SOURCE_REPO_PASS}" --token "${GITHUB_TOKEN}"
+    # TODO fikse logikken her...
     tea login add --name source --url "${SOURCE_REPO_PREFIX}" --user ${SOURCE_REPO_USER} --password "${SOURCE_REPO_PASS}" --token "${GITHUB_TOKEN}"
+    tea login add --name target --url "${SOURCE_REPO_PREFIX}" --user ${SOURCE_REPO_USER} --password "${SOURCE_REPO_PASS}" --token "${GITHUB_TOKEN}"
   else
     info "the target repository is located in Github."
     gh auth login --git-protocol "https" --hostname "${SOURCE_REPO_HOSTNAME}" --with-token <<< "${GITHUB_TOKEN}"
