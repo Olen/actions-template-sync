@@ -149,6 +149,40 @@ function gpg_setup() {
 
 
 #######################################
+# doing the git credential setup for the
+# source repo
+#
+# for destination, we use gh/tea
+# Arguments:
+#   
+#   git_user_name
+#   source_repo_hostname
+#######################################
+function git_source_cred_helper() {
+  info "set git source cred configuration"
+  echo '#!/bin/bash' > ./git_source_creds.sh
+  echo "sleep 1" >> ./git_source_creds.sh
+  echo "echo username=${SOURCE_REPO_USER}" >> ./git_source_creds.sh
+  echo "echo password=${SOURCE_REPO_PASS}" >> ./git_source_creds.sh
+
+  info "set git target cred configuration"
+  echo '#!/bin/bash' > ./git_target_creds.sh
+  echo "sleep 1" >> ./git_target_creds.sh
+  echo "echo username=${TARGET_REPO_USER}" >> ./git_target_creds.sh
+  echo "echo password=${TARGET_REPO_PASS}" >> ./git_target_creds.sh
+}
+
+function git_activate_source_repo() {
+  info "set git source as active repo"
+  git config --global credential.helper "/bin/bash ./git_source_creds.sh"
+}
+
+function git_activate_target_repo() {
+  info "set git source as active repo"
+  git config --global credential.helper "/bin/bash ./git_target_creds.sh"
+}
+
+#######################################
 # doing the git setup.
 # Arguments:
 #   git_user_email

@@ -89,6 +89,8 @@ inputs:
     default: "443"
   source_repo_token:
     description: "[optional] token to login to the source repo"
+  source_repo:
+    description: "[optional] source repo to pull from (full URL)"
 outputs:
   pr_branch:
     description: "The name of the PR branch"
@@ -138,4 +140,5 @@ runs:
         SOURCE_REPO_PROTO: ${{ inputs.source_repo_proto }}
         SOURCE_REPO_PORT: ${{ inputs.source_repo_port }}
         SOURCE_REPO_TOKEN: ${{ inputs.source_repo_token }}
+        SOURCE_REPO: ${{ inputs.source_repo }}
         
