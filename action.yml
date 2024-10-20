@@ -87,6 +87,8 @@ inputs:
   source_repo_port:
     description: "[optional] port used to pull from source repo (default 443)"
     default: "443"
+  source_repo_token:
+    description: "[optional] token to login to the source repo"
 outputs:
   pr_branch:
     description: "The name of the PR branch"
@@ -135,4 +137,5 @@ runs:
         IS_TARGET_GITEA: ${{ inputs.is_target_gitea }}
         SOURCE_REPO_PROTO: ${{ inputs.source_repo_proto }}
         SOURCE_REPO_PORT: ${{ inputs.source_repo_port }}
+        SOURCE_REPO_TOKEN: ${{ inputs.source_repo_token }}
         
