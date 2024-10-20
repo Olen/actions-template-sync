@@ -198,7 +198,7 @@ elif [[ "${SOURCE_REPO_HOSTNAME}" != "${DEFAULT_REPO_HOSTNAME}" ]]; then
     origin=$(git remote get-url origin)
     # info "Adding source repo to tea"
     # tea login add --name source --url "${SOURCE_REPO_PREFIX}" --user ${SOURCE_REPO_USER} --password "${SOURCE_REPO_PASS}" --token "${SOURCE_REPO_TOKEN}"
-    info "Adding dest repo to tea"
+    info "Adding dest repo ${origin} to tea"
     tea login add --name target --url "${origin}" --token "${GITHUB_TOKEN}"
     sleep 600
   else
