@@ -50,15 +50,16 @@ GIT_USER_EMAIL="${GIT_USER_EMAIL:-github-action@actions-template-sync.noreply.${
 while IFS='/' read -ra SR; do
   SOURCE_REPO_USER=${SR[0]}
 done <<< "$SOURCE_REPO_PATH"
-SOURCE_REPO_PASS=$GITHUB_TOKEN
+
+# Unsure if we need to have both a token and a password
+SOURCE_REPO_PASS=$SOURCE_REPO_TOKEN
 # In case of ssh template repository this will be overwritten
 if [[ "$SOURCE_REPO_PROTO" =~ ^http* ]]; then
+  # Add username and password to the URL
   SOURCE_REPO_PREFIX="${SOURCE_REPO_PROTO}://${SOURCE_REPO_USER}:${SOURCE_REPO_PASS}@${SOURCE_REPO_HOSTNAME}:${SOURCE_REPO_PORT}/"
 else
   SOURCE_REPO_PREFIX="${SOURCE_REPO_PROTO}://${SOURCE_REPO_HOSTNAME}:${SOURCE_REPO_PORT}/"
 fi
-info $SOURCE_REPO_PROTO
-info $SOURCE_REPO_PREFIX
 
 
 ################################################
