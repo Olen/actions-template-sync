@@ -77,3 +77,12 @@ function cmd_from_yml() {
     for key in "${cmd_Arr[@]}"; do echo "${key}" | bash; done
   fi
 }
+
+function git_user_from_url() {
+  local giturl = $1
+  if [[ $giturl == http* ]]; then
+    echo $giturl | cut -d "/" -f 4
+  else
+    echo $giturl | cut -d ":" -f 2 | cut -d "/" -f 1
+  fi
+}
