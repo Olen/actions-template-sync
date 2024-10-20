@@ -195,6 +195,7 @@ elif [[ "${SOURCE_REPO_HOSTNAME}" != "${DEFAULT_REPO_HOSTNAME}" ]]; then
   if [[ "${IS_TARGET_GITEA}" == 'true' ]]; then
     info "the target repository is located in Gitea."
     # TODO fikse logikken her...
+    git remote get-url origin
     tea login add --name source --url "${SOURCE_REPO_PREFIX}" --user ${SOURCE_REPO_USER} --password "${SOURCE_REPO_PASS}" --token "${GITHUB_TOKEN}"
     tea login add --name target --url "${SOURCE_REPO_PREFIX}" --user ${SOURCE_REPO_USER} --password "${SOURCE_REPO_PASS}" --token "${GITHUB_TOKEN}"
   else
