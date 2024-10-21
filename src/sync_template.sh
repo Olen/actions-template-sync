@@ -362,7 +362,7 @@ function gitea_create_labels () {
   readarray -t search_result < <(tea label list --login "target" --repo "${DEST_REPO}" --output csv | cut -d "," -f 3 | tr -d \" | tail -n +2)
   for label in "${labels_array[@]}"
   do
-    info "Seaarching for <${$label}> in <${search_result[0]}>"
+    info "Seaarching for <${label}> in <${search_result[@]}>"
     if [[ $(echo ${search_result[@]} | fgrep -w $label) ]]; then
       info "label '${label}' was found in the repository"
     else
