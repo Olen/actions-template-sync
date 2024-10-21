@@ -257,7 +257,6 @@ function gitea_cleanup_older_prs () {
 
   older_prs=$(tea pr list \
     --login "target" \
-    --repo "${DEST_REPO}" \
     --state open \
     --output simple \
     --fields index,head)
@@ -273,13 +272,13 @@ function gitea_cleanup_older_prs () {
     fi
 
     if [ "$is_keep_branch_on_pr_cleanup" == true ] ; then
-      tea comment --login "target" --repo ${DEST_REPO} ${pr_number} "[actions-template-sync] :construction_worker: automatically closed because there is a new open PR. Branch is kept alive" 
-      tea pr --login "target" --repo ${DEST_REPO} close $pr_number
+      tea comment --login "target" ${pr_number} "[actions-template-sync] :construction_worker: automatically closed because there is a new open PR. Branch is kept alive" 
+      tea pr --login "target" close $pr_number
       debug "Closed PR #${older_pr} but kept the branch"
     else
-      tea comment --login "target" --repo ${DEST_REPO} $pr_number "[actions-template-sync] :construction_worker: automatically closed because there is a new open PR" 
-      tea pr --login "target" --repo ${DEST_REPO} close $pr_number
-      tea pr --login "target" --repo ${DEST_REPO} clean $pr_number
+      tea comment --login "target" $pr_number "[actions-template-sync] :construction_worker: automatically closed because there is a new open PR" 
+      tea pr --login "target" close $pr_number
+      tea pr --login "target" clean $pr_number
       debug "Closed PR #${older_pr}"
     fi
   done
