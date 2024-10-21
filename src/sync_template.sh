@@ -461,6 +461,16 @@ function gitea_create_pr() {
   local origin=$(git remote get-url origin)
   DEST_REPO=$(echo $origin | cut -d "/" -f 1-3)
 
+  info tea pr create \
+    --login "target" \
+    --title "${title}" \
+    --description "${body}" \
+    --base "${branch}" \
+    --labels "${labels}" \
+    --assignees "${reviewers}" || create_pr_has_issues=true
+
+  sleep 3600
+
   tea pr create \
     --login "target" \
     --title "${title}" \
