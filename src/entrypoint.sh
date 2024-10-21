@@ -5,7 +5,7 @@ set -e
 
 SCRIPT_DIR="$(dirname "$(readlink -f "$0")")"
 
-echo "Token: ${secrets.GITHUB_TOKEN}"
+echo "Token: ${{ secrets.GITHUB_TOKEN }}"
 exit 0
 
 # shellcheck source=src/sync_common.sh
