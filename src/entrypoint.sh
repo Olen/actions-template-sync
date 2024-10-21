@@ -230,6 +230,7 @@ function git_init() {
     if [[ "${SOURCE_REPO_TYPE}" == "gitea" ]]; then
       info "Adding source repo ${SOURCE_REPO} to tea"
       tea login add --name target --url "${SOURCE_REPO}" --token "${SOURCE_REPO_TOKEN}"
+    fi
     if [[ "${TARGET_REPO_TYPE}" == "gitea" ]]; then
       info "Adding target repo ${TARGET_REPO} to tea"
       tea login add --name target --url "${SOURCE_REPO}" --token "${GIHUB_TOKEN}"
