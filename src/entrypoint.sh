@@ -227,6 +227,7 @@ function git_init() {
     mkdir -p "${HOME}"/.ssh
     ssh-keyscan -t rsa "${source_repo_hostname}" >> "${HOME}"/.ssh/known_hosts
     add_git_cred_helpers
+    sleep 3600
     if [[ "${SOURCE_REPO_TYPE}" == "gitea" ]]; then
       base_url=$(echo "${SOURCE_REPO}" | cut -d "/" -f 1-3)
       info "Adding source repo ${base_url} to tea"
@@ -237,7 +238,6 @@ function git_init() {
       info "Adding target repo ${base_url} to tea"
       tea login add --name target --url "${base_url}" --token "${GIHUB_TOKEN}"
     fi
-    sleep 3600
   else
     info "the source repository is located within GitHub."
     gh auth setup-git --hostname "${source_repo_hostname}"
