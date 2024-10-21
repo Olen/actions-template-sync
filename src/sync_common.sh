@@ -78,11 +78,37 @@ function cmd_from_yml() {
   fi
 }
 
-function git_user_from_url() {
-  local giturl = $1
-  if [[ $giturl == http* ]]; then
-    echo $giturl | cut -d "/" -f 4
+function get_repo_vendor() {
+  local giturl=$1
+  if [[ "$giturl" =~ ^http* ]]; then
+    header=$(curl --silent --head "${giturl}")
+    if [[ "$header" =~ github ]]; then
+      echo "github"
+    elif [[ "$header" =~ gitea ]]; then
+      echo "gitea"
+    elif [[ "$header" =~ gitlab ]]; then
+      echo "gitlab"
+    else
+      echo "unknown"
+    fi
   else
-    echo $giturl | cut -d ":" -f 2 | cut -d "/" -f 1
+    if [[ "$giturl" =~ github ]]; then
+      echo "github"
+    elif [[ "$giturl" =~ gitea ]]; then
+      echo "gitea"
+    elif [[ "$giturl" =~ gitlab ]]; then
+      echo "gitlab"
+    else
+      echo "unknown"
+    fi
+  fi
+}
+
+function get_repo_user() {
+  local giturl=$1
+  if [[ "$giturl" =~ ^http* ]]; then
+    echo "${giturl}" | cut -d "/" -f 4
+  else
+    echo "${giturl}" | cut -d ":" -f 2 | cut -d "/" -f 1
   fi
 }

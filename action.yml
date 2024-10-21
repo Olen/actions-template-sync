@@ -81,6 +81,9 @@ inputs:
   is_target_gitea:
     description: "[optional] set to true if the target repo is in gitea (use `tea` intead of `gh` for cli commands)"
     default: "false"
+  is_target_gitlab:
+    description: "[optional] set to true if the target repo is in gitlab (currently not used)"
+    default: "false"
   source_repo_proto:
     description: "[optional] protocol used to pull source repo. Options: 'http' or 'https' (default)"
     default: "https"
@@ -137,6 +140,7 @@ runs:
         TEMPLATE_SYNC_IGNORE_FILE_PATH: ${{ inputs.template_sync_ignore_file_path }}
         IS_WITH_TAGS: ${{ inputs.is_with_tags }}
         IS_TARGET_GITEA: ${{ inputs.is_target_gitea }}
+        IS_TARGET_GITLAB: ${{ inputs.is_target_gitlab }}
         SOURCE_REPO_PROTO: ${{ inputs.source_repo_proto }}
         SOURCE_REPO_PORT: ${{ inputs.source_repo_port }}
         SOURCE_REPO_TOKEN: ${{ inputs.source_repo_token }}

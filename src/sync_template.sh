@@ -53,11 +53,8 @@ IS_FORCE_PUSH_PR="${IS_FORCE_PUSH_PR:-"false"}"
 IS_KEEP_BRANCH_ON_PR_CLEANUP="${IS_KEEP_BRANCH_ON_PR_CLEANUP:-"false"}"
 GIT_REMOTE_PULL_PARAMS="${GIT_REMOTE_PULL_PARAMS:---allow-unrelated-histories --squash --strategy=recursive -X theirs}"
 
-info "55 ${SOURCE_REPO}"
-info "56 $(git remote get-url origin)"
 TEMPLATE_REMOTE_GIT_HASH=$(git ls-remote "${SOURCE_REPO}" HEAD | awk '{print $1}')
 SHORT_TEMPLATE_GIT_HASH=$(git rev-parse --short "${TEMPLATE_REMOTE_GIT_HASH}")
-info "59"
 
 export TEMPLATE_GIT_HASH=${SHORT_TEMPLATE_GIT_HASH}
 export PR_BRANCH="${PR_BRANCH_NAME_PREFIX}_${TEMPLATE_GIT_HASH}"
@@ -86,7 +83,6 @@ if [[ -f ".github/${TEMPLATE_SYNC_IGNORE_FILE_PATH}" || ! -f "${TEMPLATE_SYNC_IG
     TEMPLATE_SYNC_IGNORE_FILE_PATH=".github/${TEMPLATE_SYNC_IGNORE_FILE_PATH}"
 fi
 
-info "86"
 #####################################################
 # Functions
 #####################################################
@@ -126,6 +122,7 @@ function check_branch_remote_existing() {
 
   info "check if the remote branch ${branch_to_check} exists. Exit if so"
 
+  git_activate_target_repo
   git ls-remote --exit-code --heads origin "${branch_to_check}" || branch_does_not_exist=true
 
   if [[ "${branch_does_not_exist}" != true ]]; then
@@ -146,6 +143,7 @@ function check_if_commit_already_in_hist_graceful_exit() {
 
   local template_remote_git_hash=$1
 
+  git_activate_target_repo
   git cat-file -e "${template_remote_git_hash}" || commit_not_in_hist=true
   if [ "${commit_not_in_hist}" != true ] ; then
     warn "repository is up to date!"
@@ -158,6 +156,7 @@ function check_if_commit_already_in_hist_graceful_exit() {
 # exit if not
 ##########################################
 function check_staged_files_available_graceful_exit() {
+  git_activate_target_repo
   if git diff --quiet && git diff --staged --quiet; then
     info "nothing to commit"
     exit 0
@@ -202,6 +201,7 @@ function cleanup_older_prs () {
     return 0
   fi
 
+  git_activate_target_repo
   if [[ "${IS_TARGET_GITEA}" ]]; then
     gitea_cleanup_older_prs "${upstream_branch}" "${pr_labels}" "${is_keep_branch_on_pr_cleanup}" "${local_branch_name}"
     return
@@ -293,6 +293,7 @@ function pull_source_changes() {
   local source_repo=$1
   local git_remote_pull_params=$2
 
+  git_activate_source_repo
   eval "git pull ${source_repo} --tags ${git_remote_pull_params}" || pull_has_issues=true
 
   if [ "$pull_has_issues" == true ] ; then
@@ -316,6 +317,7 @@ function eventual_create_labels () {
     retun 0
   fi
 
+  git_activate_target_repo
   if [[ "${IS_TARGET_GITEA}" ]]; then
     gitea_create_labels "${pr_labels}" 
     return
@@ -393,6 +395,7 @@ function push () {
     warn "include tags."
     args+=(--tags)
   fi
+  git_activate_target_repo
 
   git push "${args[@]}"
 }
@@ -414,6 +417,7 @@ function create_pr() {
   local labels=$4
   local reviewers=$5
 
+  git_activate_target_repo
   if [[ "${IS_TARGET_GITEA}" ]]; then
     gitea_create_pr "${title}" "${body}" "${branch}" "${labels}" "${reviewers}"
     return
@@ -488,6 +492,7 @@ function create_or_edit_pr() {
   local reviewers=$5
   local pr_branch=$6
 
+  git_activate_target_repo
   if [[ "${IS_TARGET_GITEA}" ]]; then
     gitea_create_pr "${title}" "${body}" "${upstream_branch}" "${labels}" "${reviewers}" || error "Unable to edit PRs in gitea"
     return
@@ -508,6 +513,7 @@ function create_or_edit_pr() {
 function restore_templatesyncignore_file() {
   info "restore the ignore file"
   local template_sync_ignore_file_path=$1
+  git_activate_target_repo
   if [ -s "${template_sync_ignore_file_path}" ]; then
     git reset "${template_sync_ignore_file_path}"
     git checkout -- "${template_sync_ignore_file_path}" || warn "not able to checkout the former .templatesyncignore file. Most likely the file was not present"
@@ -524,6 +530,7 @@ function handle_templatesyncignore() {
   local template_sync_ignore_file_path=$1
   # we are checking the ignore file if it exists or is empty
   # -s is true if the file contains whitespaces
+  git_activate_target_repo
   if [ -s "${template_sync_ignore_file_path}" ]; then
     debug "unstage files from template sync ignore ${template_sync_ignore_file_path}"
     sed '/^[[:blank:]]*#/d;s/#.*//' "${template_sync_ignore_file_path}" | awk NF | xargs -r git reset --
