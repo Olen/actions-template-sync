@@ -5,7 +5,7 @@ set -e
 
 SCRIPT_DIR="$(dirname "$(readlink -f "$0")")"
 
-info ${GIGHUB_TOKEN}
+echo "Token: ${GIGHUB_TOKEN}"
 exit 0
 
 # shellcheck source=src/sync_common.sh
