@@ -359,15 +359,15 @@ function gitea_create_labels () {
   DEST_REPO=$(echo $origin | cut -d "/" -f 1-3)
 
   readarray -t labels_array < <(awk -F',' '{ for( i=1; i<=NF; i++ ) print $i }' <<<"${pr_labels}")
-  readarray -t search_result < <(tea label list --login "target" --repo "${DEST_REPO}" --output csv | cut -d "," -f 3 | tr -d \" | tail -n +2)
-  sleep 3600
+  readarray -t search_result < <(tea label list --login "target" --output csv | cut -d "," -f 3 | tr -d \" | tail -n +2)
+  # sleep 3600
   for label in "${labels_array[@]}"
   do
     info "Seaarching for <${label}> in <${search_result[@]}>"
     if [[ $(echo ${search_result[@]} | fgrep -w $label) ]]; then
       info "label '${label}' was found in the repository"
     else
-      if tea label create --login "target" --name "${label}" --color "ffaabb" --repo "${DEST_REPO}"; then
+      if tea label create --login "target" --name "${label}" --color "ffaabb"; then
         info "label '${label}' was missing and has been created"
       else
         warn "label creation did not work. For any reason the former check sometimes is failing"
