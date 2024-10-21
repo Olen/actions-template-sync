@@ -463,7 +463,6 @@ function gitea_create_pr() {
 
   tea pr create \
     --login "target" \
-    --repo "${DEST_REPO}" \
     --title "${title}" \
     --description "${body}" \
     --base "${branch}" \
