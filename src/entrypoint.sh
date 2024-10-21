@@ -236,7 +236,7 @@ function git_init() {
     if [[ "${TARGET_REPO_TYPE}" == "gitea" ]]; then
       base_url=$(echo "${TARGET_REPO}" | cut -d "/" -f 1-3)
       info "Adding target repo ${base_url} to tea"
-      tea login add --name target --url "${base_url}" --token "${GIHUB_TOKEN}"
+      tea login add --name target --url "${base_url}" --token "${GITHUB_TOKEN}"
     fi
   else
     info "the source repository is located within GitHub."
