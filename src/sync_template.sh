@@ -360,6 +360,7 @@ function gitea_create_labels () {
 
   readarray -t labels_array < <(awk -F',' '{ for( i=1; i<=NF; i++ ) print $i }' <<<"${pr_labels}")
   readarray -t search_result < <(tea label list --login "target" --repo "${DEST_REPO}" --output csv | cut -d "," -f 3 | tr -d \" | tail -n +2)
+  sleep 3600
   for label in "${labels_array[@]}"
   do
     info "Seaarching for <${label}> in <${search_result[@]}>"
