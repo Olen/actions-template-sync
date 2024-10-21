@@ -227,7 +227,7 @@ function git_init() {
     mkdir -p "${HOME}"/.ssh
     ssh-keyscan -t rsa "${source_repo_hostname}" >> "${HOME}"/.ssh/known_hosts
     add_git_cred_helpers
-    sleep 3600
+    # sleep 3600
     if [[ "${SOURCE_REPO_TYPE}" == "gitea" ]]; then
       base_url=$(echo "${SOURCE_REPO}" | cut -d "/" -f 1-3)
       info "Adding source repo ${base_url} to tea"
