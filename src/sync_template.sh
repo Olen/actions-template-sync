@@ -263,8 +263,11 @@ function gitea_cleanup_older_prs () {
 
   for older_pr in $older_prs
   do
+    debug "Older pr: $older_pr"
     pr_number=$(echo "$older_pr" | cut -d " " -f 1)
     branch_name=$(echo "$older_pr" | cut -d " " -f 2)
+    debug "Pr number $pr_number"
+    debug "Branch name $branch_name"
 
     if [ "$branch_name" == "$local_branch_name" ] ; then
       warn "local branch name equals remote pr branch name ${local_branch_name}. Skipping pr cleanup for this branch"
