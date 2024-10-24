@@ -262,7 +262,7 @@ function gitea_cleanup_older_prs () {
     --fields index,head)
 
   debug "Older prs: $older_prs"
-  for older_pr in $older_prs
+  for older_pr in "${older_prs[@]}"
   do
     debug "Older pr: $older_pr"
     pr_number=$(echo "$older_pr" | cut -d " " -f 1)
