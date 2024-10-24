@@ -255,7 +255,7 @@ function gitea_cleanup_older_prs () {
   local origin=$(git remote get-url origin)
   DEST_REPO=$(echo $origin | cut -d "/" -f 1-3)
 
-  older_prs=$(tea pr list \
+  readarray -t older_prs < <(tea pr list \
     --login "target" \
     --state open \
     --output simple \
