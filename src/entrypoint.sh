@@ -229,14 +229,11 @@ function git_init() {
     if [[ "${SOURCE_REPO_TYPE}" == "gitea" ]]; then
       base_url=$(echo "${SOURCE_REPO}" | cut -d "/" -f 1-3)
       info "Adding source repo ${base_url} to tea"
-      echo tea login add --name source --url "${base_url}" --token "${SOURCE_REPO_TOKEN}"
       tea login add --name source --url "${base_url}" --token "${SOURCE_REPO_TOKEN}"
     fi
     if [[ "${TARGET_REPO_TYPE}" == "gitea" ]]; then
       base_url=$(echo "${TARGET_REPO}" | cut -d "/" -f 1-3)
-      info "Adding target repo ${base_url} to tea and ${GITHUB_USER} ${GITHUB_TOKEN}"
-      echo tea login add --name target --url "${base_url}" --user "${GITHUB_USER}" --password "${GITHUB_TOKEN}" --token "${GITHUB_TOKEN}"
-      # sleep 3600
+      info "Adding target repo ${base_url} to tea"
       tea login add --name target --url "${base_url}" --user "${GITHUB_USER}" --password "${GITHUB_TOKEN}" --token "${GITHUB_TOKEN}"
     fi
   else
