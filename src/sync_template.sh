@@ -278,17 +278,14 @@ function gitea_cleanup_older_prs () {
     else
       tea comment --login "target" $pr_number "[actions-template-sync] :construction_worker: automatically closed because there is a new open PR" 
       info tea pr --login "target" close $pr_number
-      info tea pr --fields head --comments false $pr_number --format simple
-      info tea pr --login "target" clean $pr_number
-      debug "Branch name: ${branch_name}"
-      debug "Local Branch name: ${local_branch_name}"
-      debug "Older PR: ${older_pr}"
-      debug "DEST_REPO: ${DEST_REPO}"
-      debug "Origin: ${origin}"
-      # https://www.freecodecamp.org/news/git-delete-remote-branch/
-      sleep 3600
       tea pr --login "target" close $pr_number
-      tea pr --login "target" clean $pr_number
+      # info tea pr --login "target" clean $pr_number
+      # tea pr --login "target" clean $pr_number
+      # For some reason tea pt clean does not work properly. We just use git-commands to do it
+      # https://www.freecodecamp.org/news/git-delete-remote-branch/
+      remote_pr_branch=$(tea pr --login "target" --fields head --output simple --comments false ${pr_number})
+      git fetch --all
+      git push origin -d ${remote_pr_branch}
       debug "Closed PR #${older_pr}"
     fi
   done
