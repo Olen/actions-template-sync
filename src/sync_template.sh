@@ -285,6 +285,8 @@ function gitea_cleanup_older_prs () {
       # https://www.freecodecamp.org/news/git-delete-remote-branch/
       remote_pr_branch=$(tea pr --login "target" --fields head --output simple --comments false ${pr_number})
       git fetch --all
+      info git push origin -d ${remote_pr_branch}
+      sleep 3600
       git push origin -d ${remote_pr_branch}
       debug "Closed PR #${older_pr}"
     fi
