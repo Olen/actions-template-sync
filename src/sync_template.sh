@@ -281,6 +281,11 @@ function gitea_cleanup_older_prs () {
       tea pr --login "target" close $pr_number
 
       info tea pr --login "target" clean $pr_number
+      debug "Branch name: ${branch_name}"
+      debug "Local Branch name: ${local_branch_name}"
+      debug "Older PR: ${older_pr}"
+      debug "DEST_REPO: ${DEST_REPO}"
+      debug "Origin: ${origin}"
       sleep 3600
       tea pr --login "target" clean $pr_number
       debug "Closed PR #${older_pr}"
