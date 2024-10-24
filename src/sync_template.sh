@@ -130,7 +130,7 @@ function check_branch_remote_existing() {
   git ls-remote --exit-code --heads origin "${branch_to_check}" || branch_does_not_exist=true
 
   if [[ "${branch_does_not_exist}" != true ]]; then
-    warn " :seedling: Git branch '${branch_to_check}' exists in the remote repository"
+    warn "🌱 Git branch '${branch_to_check}' exists in the remote repository"
     set_github_action_outputs "${branch_to_check}"
     exit 0
   fi
