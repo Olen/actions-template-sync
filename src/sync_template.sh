@@ -281,7 +281,7 @@ function gitea_cleanup_older_prs () {
       tea pr --login "target" close $pr_number
 
       info tea pr --login "target" clean $pr_number
-      # sleep 3600
+      sleep 3600
       tea pr --login "target" clean $pr_number
       debug "Closed PR #${older_pr}"
     fi
