@@ -40,7 +40,6 @@ elif [[ "${IS_TARGET_GITLAB}" == 'true' ]]; then
 else
   TARGET_REPO_TYPE=$(get_repo_vendor "${TARGET_REPO}")
 fi
-TARGET_REPO_USER=$(get_repo_user "${TARGET_REPO}")
 
 
 if [[ "${TARGET_REPO_TYPE}" == 'gitea' ]]; then
@@ -67,7 +66,6 @@ SOURCE_REPO_PORT="${SOURCE_REPO_PORT:-${DEFAULT_REPO_PORT}}"
 GIT_USER_NAME="${GIT_USER_NAME:-${GITHUB_ACTOR}}"
 GIT_USER_EMAIL="${GIT_USER_EMAIL:-github-action@actions-template-sync.noreply.${SOURCE_REPO_HOSTNAME}}"
 
-# Unsure if we need to have both a token and a password
 # In case of ssh template repository this will be overwritten
 if [[ "$SOURCE_REPO_PROTO" =~ ^http* ]]; then
   # Add username and password to the URL
@@ -183,7 +181,7 @@ function add_git_cred_helpers() {
   info "set git target cred configuration"
   echo '#!/bin/bash' > ./git_target_creds.sh
   echo "sleep 1" >> ./git_target_creds.sh
-  echo "echo username=${TARGET_REPO_USER}" >> ./git_target_creds.sh
+  echo "echo username=${GITHUB_USER}" >> ./git_target_creds.sh
   echo "echo password=${GITHUB_TOKEN}" >> ./git_target_creds.sh
 }
 
@@ -236,7 +234,7 @@ function git_init() {
     if [[ "${TARGET_REPO_TYPE}" == "gitea" ]]; then
       base_url=$(echo "${TARGET_REPO}" | cut -d "/" -f 1-3)
       info "Adding target repo ${base_url} to tea"
-      tea login add --name target --url "${base_url}" --token "${GITHUB_TOKEN}"
+      tea login add --name target --url "${base_url}" --user "${GITHUB_USER}" --token "${GITHUB_TOKEN}"
     fi
   else
     info "the source repository is located within GitHub."
