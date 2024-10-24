@@ -172,27 +172,29 @@ function gpg_setup() {
 #   source_repo_hostname
 #######################################
 function add_git_cred_helpers() {
+  export SOURCE_CRED_FILE="/workspace/git_source_creds.sh"
+  export TARGET_CRED_FILE="/workspace/git_target_creds.sh"
   info "set git source cred configuration"
-  echo '#!/bin/bash' > ./git_source_creds.sh
-  echo "sleep 1" >> ./git_source_creds.sh
-  echo "echo username=${SOURCE_REPO_USER}" >> ./git_source_creds.sh
-  echo "echo password=${SOURCE_REPO_TOKEN}" >> ./git_source_creds.sh
+  echo '#!/bin/bash' > ${SOURCE_CRED_FILE}
+  echo "sleep 1" >> ${SOURCE_CRED_FILE}
+  echo "echo username=${SOURCE_REPO_USER}" >> ${SOURCE_CRED_FILE}
+  echo "echo password=${SOURCE_REPO_TOKEN}" >> ${SOURCE_CRED_FILE}
 
   info "set git target cred configuration"
-  echo '#!/bin/bash' > ./git_target_creds.sh
-  echo "sleep 1" >> ./git_target_creds.sh
-  echo "echo username=${GITHUB_USER}" >> ./git_target_creds.sh
-  echo "echo password=${GITHUB_TOKEN}" >> ./git_target_creds.sh
+  echo '#!/bin/bash' ${TARGET_CRED_FILE}
+  echo "sleep 1" >> ${TARGET_CRED_FILE}
+  echo "echo username=${GITHUB_USER}" >> ${TARGET_CRED_FILE}
+  echo "echo password=${GITHUB_TOKEN}" >> ${TARGET_CRED_FILE}
 }
 
 function git_activate_source_repo() {
   info "set git source as active repo"
-  git config --global credential.helper "/bin/bash ./git_source_creds.sh"
+  git config --global credential.helper "/bin/bash ${SOURCE_CRED_FILE}"
 }
 
 function git_activate_target_repo() {
   info "set git target as active repo"
-  git config --global credential.helper "/bin/bash ./git_target_creds.sh"
+  git config --global credential.helper "/bin/bash ${TARGET_CRED_FILE}"
 }
 
 #######################################
