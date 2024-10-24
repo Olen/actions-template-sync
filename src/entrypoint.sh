@@ -236,7 +236,7 @@ function git_init() {
       base_url=$(echo "${TARGET_REPO}" | cut -d "/" -f 1-3)
       info "Adding target repo ${base_url} to tea and ${GITHUB_USER} ${GITHUB_TOKEN}"
       echo tea login add --name target --url "${base_url}" --user "${GITHUB_USER}" --password "${GITHUB_TOKEN}" --token "${GITHUB_TOKEN}"
-      sleep 3600
+      # sleep 3600
       tea login add --name target --url "${base_url}" --user "${GITHUB_USER}" --password "${GITHUB_TOKEN}" --token "${GITHUB_TOKEN}"
     fi
   else
