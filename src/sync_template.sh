@@ -471,7 +471,7 @@ function gitea_create_pr() {
     --labels "${labels}" \
     --assignees "${reviewers}" || create_pr_has_issues=true
 
-  sleep 3600
+  # sleep 3600
 
   tea pr create \
     --login "target" \
