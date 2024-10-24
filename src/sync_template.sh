@@ -130,7 +130,7 @@ function check_branch_remote_existing() {
   git ls-remote --exit-code --heads origin "${branch_to_check}" || branch_does_not_exist=true
 
   if [[ "${branch_does_not_exist}" != true ]]; then
-    warn "🌱 Git branch '${branch_to_check}' exists in the remote repository"
+    info "🌱 Git branch '${branch_to_check}' exists in the remote repository"
     set_github_action_outputs "${branch_to_check}"
     exit 0
   fi
@@ -281,6 +281,8 @@ function gitea_cleanup_older_prs () {
       tea pr --login "target" close $pr_number
 
       info tea pr --login "target" clean $pr_number
+      # sleep 3600
+      tea pr --login "target" clean $pr_number
       debug "Closed PR #${older_pr}"
     fi
   done
