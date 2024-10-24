@@ -278,7 +278,6 @@ function gitea_cleanup_older_prs () {
     else
       tea comment --login "target" $pr_number "[actions-template-sync] :construction_worker: automatically closed because there is a new open PR" 
       info tea pr --login "target" close $pr_number
-      tea pr --login "target" close $pr_number
 
       info tea pr --login "target" clean $pr_number
       debug "Branch name: ${branch_name}"
@@ -287,6 +286,7 @@ function gitea_cleanup_older_prs () {
       debug "DEST_REPO: ${DEST_REPO}"
       debug "Origin: ${origin}"
       sleep 3600
+      tea pr --login "target" close $pr_number
       tea pr --login "target" clean $pr_number
       debug "Closed PR #${older_pr}"
     fi
