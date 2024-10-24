@@ -270,7 +270,7 @@ function gitea_cleanup_older_prs () {
     debug "Pr number $pr_number"
     debug "Branch name $branch_name"
 
-    sleep 3600
+    # sleep 3600
 
     if [ "$branch_name" == "$local_branch_name" ] ; then
       warn "local branch name equals remote pr branch name ${local_branch_name}. Skipping pr cleanup for this branch"
