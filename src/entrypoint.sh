@@ -231,7 +231,7 @@ function git_init() {
 
 if [[ "${TARGET_REPO_TYPE}" == 'gitea' ]]; then
   info "🍵 The target repository is located in Gitea. Install tea."
-  wget --non-verbose https://dl.gitea.com/tea/main/tea-main-linux-amd64 -O /usr/bin/tea
+  wget --no-verbose https://dl.gitea.com/tea/main/tea-main-linux-amd64 -O /usr/bin/tea
   chmod 755 /usr/bin/tea
 fi
 
