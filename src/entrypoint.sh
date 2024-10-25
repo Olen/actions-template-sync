@@ -12,6 +12,20 @@ source "${SCRIPT_DIR}/sync_common.sh"
 # Precheks
 ##########################################
 
+# Create SOURCE_REPO for backwards compatibility
+if [[ -z "${SOURCE_REPO}" ]]; then
+  if [[ -z "${SOURCE_REPO_PATH}" ]]; then
+    err "Missing input 'source_repo: \${{ input.source_repo }}'.";
+    exit 1
+  fi
+  if [[ -z "${HOSTNAME}" ]]; then
+  else
+    SOURCE_REPO_PREFIX="https://${HOSTNAME}/"
+    # SOURCE_REPO=
+  fi
+
+
+
 if [[ -z "${GITHUB_TOKEN}" ]]; then
     err "Missing input 'github_token: \${{ secrets.GITHUB_TOKEN }}'.";
     exit 1;
