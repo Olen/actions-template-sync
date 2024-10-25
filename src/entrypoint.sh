@@ -18,11 +18,11 @@ if [[ -z "${SOURCE_REPO}" ]]; then
     err "Missing input 'source_repo: \${{ input.source_repo }}'.";
     exit 1
   fi
-  if [[ -z "${HOSTNAME}" ]]; then
-  else
-    SOURCE_REPO_PREFIX="https://${HOSTNAME}/"
-    # SOURCE_REPO=
-  fi
+  DEFAULT_REPO_HOSTNAME="github.com"
+  SOURCE_REPO_HOSTNAME="${HOSTNAME:-${DEFAULT_REPO_HOSTNAME}}"
+  SOURCE_REPO_PREFIX="https://${SOURCE_REPO_HOSTNAME}/"
+  SOURCE_REPO="${SOURCE_REPO_PREFIX}${SOURCE_REPO_PATH}"
+fi
 
 
 
@@ -57,7 +57,7 @@ TARGET_CRED_FILE="/workspace/git_target_creds.sh"
 TARGET_REPO=$(git remote get-url origin)
 
 # Explicitly set repo type in case auto detect does not work
-# Add more elseifs to extend to other vendors
+# Add more vars to action.yml and elseifs here to extend to other vendors
 if [[ "${IS_TARGET_GITEA}" == 'true' ]]; then
   TARGET_REPO_TYPE="gitea"
 else
@@ -159,9 +159,11 @@ function gpg_setup() {
 
 #######################################
 # doing the git credential setup for the
-# source repo
+# source and destination repo
 #
-# for destination, we use gh/tea
+# requied in case source or destination is
+# private repos
+#
 #######################################
 function add_git_cred_helpers() {
   debug "create git source cred configuration"
