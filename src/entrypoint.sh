@@ -28,52 +28,34 @@ if [[ -z "${HOME}" ]]; then
 fi
 
 
-SOURCE_REPO_TYPE=$(get_repo_vendor "${SOURCE_REPO}")
-SOURCE_REPO_USER=$(get_repo_user "${SOURCE_REPO}")
+############################################
+# Variables
+############################################
 
+SOURCE_REPO_TYPE=$(get_repo_vendor "${SOURCE_REPO}")
+SOURCE_REPO_HOSTNAME=$(get_repo_hostname "${SOURCE_REPO}")
+SOURCE_REPO_USER=$(get_repo_user "${SOURCE_REPO}")
+SOURCE_REPO_PROTO=$(get_repo_protocol "${SOURCE_REPO}")
+
+SOURCE_CRED_FILE="/workspace/git_source_creds.sh"
+TARGET_CRED_FILE="/workspace/git_target_creds.sh"
 
 TARGET_REPO=$(git remote get-url origin)
+
+# Explicitly set repo type in case auto detect does not work
+# Add more elseifs to extend to other vendors
 if [[ "${IS_TARGET_GITEA}" == 'true' ]]; then
-  TARGET_REPO_TYPE="gitea"
-elif [[ "${IS_TARGET_GITLAB}" == 'true' ]]; then
   TARGET_REPO_TYPE="gitea"
 else
   TARGET_REPO_TYPE=$(get_repo_vendor "${TARGET_REPO}")
-fi
-
-
-if [[ "${TARGET_REPO_TYPE}" == 'gitea' ]]; then
-  info "the target repository is located in Gitea."
-  wget -nv https://dl.gitea.com/tea/main/tea-main-linux-amd64 -O /usr/bin/tea
-  chmod 755 /usr/bin/tea
 fi
 
 if ! [[ "${SOURCE_REPO_TYPE}" == "github" ]]; then
   IS_NOT_SOURCE_GITHUB='true'
 fi
 
-
-############################################
-# Variables
-############################################
-
-DEFAULT_REPO_HOSTNAME="github.com"
-DEFAULT_REPO_PROTO="https"
-DEFAULT_REPO_PORT="443"
-SOURCE_REPO_HOSTNAME="${HOSTNAME:-${DEFAULT_REPO_HOSTNAME}}"
-SOURCE_REPO_PROTO="${SOURCE_REPO_PROTO:-${DEFAULT_REPO_PROTO}}"
-SOURCE_REPO_PORT="${SOURCE_REPO_PORT:-${DEFAULT_REPO_PORT}}"
 GIT_USER_NAME="${GIT_USER_NAME:-${GITHUB_ACTOR}}"
 GIT_USER_EMAIL="${GIT_USER_EMAIL:-github-action@actions-template-sync.noreply.${SOURCE_REPO_HOSTNAME}}"
-
-# In case of ssh template repository this will be overwritten
-if [[ "$SOURCE_REPO_PROTO" =~ ^http* ]]; then
-  # Add username and password to the URL
-  SOURCE_REPO_PREFIX="${SOURCE_REPO_PROTO}://${SOURCE_REPO_USER}:${SOURCE_REPO_PASS}@${SOURCE_REPO_HOSTNAME}:${SOURCE_REPO_PORT}/"
-else
-  SOURCE_REPO_PREFIX="${SOURCE_REPO_PROTO}://${SOURCE_REPO_HOSTNAME}:${SOURCE_REPO_PORT}/"
-fi
-
 
 ################################################
 # Functions
@@ -166,14 +148,8 @@ function gpg_setup() {
 # source repo
 #
 # for destination, we use gh/tea
-# Arguments:
-#   
-#   git_user_name
-#   source_repo_hostname
 #######################################
 function add_git_cred_helpers() {
-  export SOURCE_CRED_FILE="/workspace/git_source_creds.sh"
-  export TARGET_CRED_FILE="/workspace/git_target_creds.sh"
   info "set git source cred configuration"
   echo '#!/bin/bash' > ${SOURCE_CRED_FILE}
   echo "sleep 1" >> ${SOURCE_CRED_FILE}
@@ -222,33 +198,42 @@ function git_init() {
     git lfs install
   fi
 
-  if [[ "${IS_NOT_SOURCE_GITHUB}" == 'true' ]]; then
-    info "the source repository is not located within GitHub."
+  add_git_cred_helpers
+
+  if [[ "${SOURCE_REPO_PROTO}" == 'ssh' ]]; then
+    info "the source repository is ssh."
     mkdir -p "${HOME}"/.ssh
     ssh-keyscan -t rsa "${source_repo_hostname}" >> "${HOME}"/.ssh/known_hosts
-    add_git_cred_helpers
-    # sleep 3600
-    if [[ "${SOURCE_REPO_TYPE}" == "gitea" ]]; then
-      base_url=$(echo "${SOURCE_REPO}" | cut -d "/" -f 1-3)
-      info "Adding source repo ${base_url} to tea"
-      tea login add --name source --url "${base_url}" --token "${SOURCE_REPO_TOKEN}"
-    fi
-    if [[ "${TARGET_REPO_TYPE}" == "gitea" ]]; then
-      base_url=$(echo "${TARGET_REPO}" | cut -d "/" -f 1-3)
-      info "Adding target repo ${base_url} to tea"
-      tea login add --name target --url "${base_url}" --user "${GITHUB_USER}" --password "${GITHUB_TOKEN}" --token "${GITHUB_TOKEN}"
-    fi
-  else
-    info "the source repository is located within GitHub."
+  fi
+
+  if [[ "${SOURCE_REPO_TYPE}" == "github" ]]; then
+    info "the source repository is in GitHub."
     gh auth setup-git --hostname "${source_repo_hostname}"
     gh auth status --hostname "${source_repo_hostname}"
   fi
+  if [[ "${SOURCE_REPO_TYPE}" == "gitea" ]]; then
+    base_url=$(echo "${SOURCE_REPO}" | cut -d "/" -f 1-3)
+    info "the source repository is in Gitea. Adding ${base_url} login to tea"
+    tea login add --name source --url "${base_url}" --token "${SOURCE_REPO_TOKEN}"
+  fi
+  if [[ "${TARGET_REPO_TYPE}" == "gitea" ]]; then
+    base_url=$(echo "${TARGET_REPO}" | cut -d "/" -f 1-3)
+    info "the target repository is in Gitea. Adding ${base_url} login to tea"
+    tea login add --name target --url "${base_url}" --user "${GITHUB_USER}" --password "${GITHUB_TOKEN}" --token "${GITHUB_TOKEN}"
+  fi
+
   echo "::endgroup::"
 }
 
 ###################################################
 # Logic
 ###################################################
+
+if [[ "${TARGET_REPO_TYPE}" == 'gitea' ]]; then
+  info "The target repository is located in Gitea. Install tea."
+  wget -nv https://dl.gitea.com/tea/main/tea-main-linux-amd64 -O /usr/bin/tea
+  chmod 755 /usr/bin/tea
+fi
 
 # Forward to /dev/null to swallow the output of the private key
 if [[ -n "${SSH_PRIVATE_KEY_SRC}" ]] &>/dev/null; then
