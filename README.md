@@ -89,7 +89,7 @@ jobs:
         #   submodules: true
 
       - name: actions-template-sync
-        uses: AndreasAugustin/actions-template-sync@v2
+        uses: Olen/actions-template-sync@v2
         with:
           source_repo: <url>
           upstream_branch: <target_branch> # defaults to main
@@ -130,7 +130,7 @@ jobs:
           token: ${{ steps.generate_token.outputs.token }}
 
       - name: actions-template-sync
-        uses: AndreasAugustin/actions-template-sync@v2
+        uses: Olen/actions-template-sync@v2
         with:
           github_token: ${{ steps.generate_token.outputs.token }}
           source_repo: <url>
@@ -167,7 +167,7 @@ jobs:
           token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: actions-template-sync
-        uses: AndreasAugustin/actions-template-sync@v2
+        uses: Olen/actions-template-sync@v2
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           source_repo: ${{ secrets.SOURCE_REPO }} # URL, should be within secrets
@@ -221,7 +221,7 @@ jobs:
           token: ${{ secrets.TARGET_GITHUB_PAT }}
 
       - name: Test action step PAT
-        uses: AndreasAugustin/actions-template-sync@v2
+        uses: Olen/actions-template-sync@v2
         with:
           github_token: ${{ secrets.TARGET_GITHUB_PAT }}
           source_repo: ${{ secrets.SOURCE_REPO }} # URL to source repo, should be within secrets
@@ -389,7 +389,7 @@ jobs:
         uses: actions/checkout@v4
 
       - name: actions-template-sync
-        uses: AndreasAugustin/actions-template-sync@v2
+        uses: Olen/actions-template-sync@v2
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           source_repo_path: <owner/repo>
@@ -456,7 +456,7 @@ jobs:
         uses: actions/checkout@v4
 
       - name: actions-template-sync first steps
-        uses: AndreasAugustin/actions-template-sync@v2
+        uses: Olen/actions-template-sync@v2
         with:
           source_repo_path: <owner/repo>
           steps: "prechecks,pull"  # order matters
@@ -467,7 +467,7 @@ jobs:
           git status
 
       - name: actions-template-sync next steps
-        uses: AndreasAugustin/actions-template-sync@v2
+        uses: Olen/actions-template-sync@v2
         with:
           source_repo_path: <owner/repo>
           steps: "commit,push,pr"  # order matters
@@ -497,7 +497,7 @@ If using the docker image the underlying OS is defined by an Alpine container.
 
 ```yml
 - name: Test action step
-  uses: AndreasAugustin/actions-template-sync@v2
+  uses: Olen/actions-template-sync@v2
   env:
     MY_VAR: "foo"  # possible to define envrionment variables
   with:
@@ -518,7 +518,7 @@ If using the docker image the underlying OS is defined by an Alpine container.
 
 ```yml
 - name: Test action step
-  uses: AndreasAugustin/actions-template-sync@v2
+  uses: Olen/actions-template-sync@v2
   with:
     source_repo_path: AndreasAugustin/template.git
     upstream_branch: main
@@ -637,7 +637,7 @@ The idea is to use the [docker action][action-docker]
                token: ${{ secrets.<secret_name> }}
 
            - name: actions-template-sync
-             uses: AndreasAugustin/actions-template-sync@v2
+             uses: Olen/actions-template-sync@v2
              with:
                github_token: ${{ secrets.GITHUB_TOKEN }}
                source_repo_path: <owner/repo>
