@@ -1,41 +1,22 @@
 # actions-template-sync
 
-Fork of [actions-template-sync](https://github.com/AndreasAugustin/actions-template-sync/) to enable syncing TO gitea
+Fork of [actions-template-sync](https://github.com/AndreasAugustin/actions-template-sync/) to enable syncing TO gitea, as well as syncing from other http(s) repos
 
-
-
-
-<!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
-[![All Contributors](https://img.shields.io/badge/all_contributors-35-orange.svg?style=flat-square)](#contributors-)
-<!-- ALL-CONTRIBUTORS-BADGE:END -->
-
- [![actions-template-sync](https://github.com/AndreasAugustin/actions-template-sync/actions/workflows/actions_template_sync.yml/badge.svg)](https://github.com/AndreasAugustin/actions-template-sync/actions/workflows/actions_template_sync.yml)
-
-[![Lint](https://github.com/AndreasAugustin/actions-template-sync/actions/workflows/lint.yml/badge.svg)](https://github.com/AndreasAugustin/actions-template-sync/actions/workflows/lint.yml)
-
-[![shellcheck](https://github.com/AndreasAugustin/actions-template-sync/actions/workflows/shellcheck.yml/badge.svg)](https://github.com/AndreasAugustin/actions-template-sync/actions/workflows/shellcheck.yml)
-
-[![test](https://github.com/AndreasAugustin/actions-template-sync/actions/workflows/test.yml/badge.svg)](https://github.com/AndreasAugustin/actions-template-sync/actions/workflows/test.yml)
-
-[![test-hooks](https://github.com/AndreasAugustin/actions-template-sync/actions/workflows/test_hooks.yml/badge.svg)](https://github.com/AndreasAugustin/actions-template-sync/actions/workflows/test_hooks.yml)
-
-[![test-ssh](https://github.com/AndreasAugustin/actions-template-sync/actions/workflows/test_ssh.yml/badge.svg)](https://github.com/AndreasAugustin/actions-template-sync/actions/workflows/test_ssh.yml)
-
-[![test-ssh-gitlab](https://github.com/AndreasAugustin/actions-template-sync/actions/workflows/test_ssh_gitlab.yml/badge.svg)](https://github.com/AndreasAugustin/actions-template-sync/actions/workflows/test_ssh_gitlab.yml)
-
-[![push-docker](https://github.com/AndreasAugustin/actions-template-sync/actions/workflows/push_docker.yml/badge.svg)](https://github.com/AndreasAugustin/actions-template-sync/actions/workflows/push_docker.yml)
-
-[![gh-pages-mk-docs](https://github.com/AndreasAugustin/actions-template-sync/actions/workflows/gh_pages_mk_docs.yml/badge.svg)](https://github.com/AndreasAugustin/actions-template-sync/actions/workflows/gh_pages_mk_docs.yml)
 
 ## abstract
 
-Synchronise git repositories in an automated manner. Different git providers like GitHub (enterprise), GitLab,.. are supported as the source provider.
+Synchronise git repositories in an automated manner. Different git providers like GitHub (enterprise), Gitea, GitLab,.. are supported as the source provider.
+Both Github and Gitea are currently supported as target providers
+
 This can help you e.g. for migration from another git provider to GitHub or if you want to mirror git repositories.
 
 ### History
 
 It is possible to create repositories within Github with
 [GitHub templates](https://docs.github.com/en/github/creating-cloning-and-archiving-repositories/creating-a-template-repository).
+
+And the same in Gitea with [Gitea templates](https://docs.gitea.com/usage/template-repositories)
+
 This is a nice approach to have some boilerplate within your repository.
 Over time, the template repository will get some code changes.
 The problem is that the already created repositories won't know about those changes.
@@ -56,11 +37,18 @@ This action is creating a pull request with the latest changes within the target
 flowchart LR
     github_source("fa:fa-github <b>GitHub</b> source repository <b>[private|public]</b>")
     gitlab_source("fa:fa-gitlab <b>GitLab</b> source repository <b>[private|public]</b>")
+    gitea_source("fa:fa-gitea <b>Gitea</b> source repository <b>[private|public]</b>")
     any_source("fa:fa-git <b>Any</b> git provider <b>[private|public]</b>")
     github_target{{"fa:fa-github <b>GitHub</b> target repository <b>[private|public]</b>"}}
+    gitea_target{{"fa:fa-gitea <b>Gitea</b> target repository <b>[private|public]</b>"}}
     github_source --> |"<b>ssh | PAT | github app</b>"| github_target
-    gitlab_source --> |"<b>ssh</b>"| github_target
-    any_source --> |"<b>ssh</b>"| github_target
+    gitlab_source --> |"<b>ssh</b>"| http(s) | github_target
+    gitea_source --> |"<b>ssh</b>"| http(s) | github_target
+    any_source --> |"<b>ssh</b>"| |http(s) | github_target
+    github_source --> |"<b>ssh | PAT | github app</b>"| gitea_target
+    gitlab_source --> |"<b>ssh</b>"| http(s) | gitea_target
+    gitea_source --> |"<b>ssh</b>"| http(s) | gitea_target
+    any_source --> |"<b>ssh</b>"| |http(s) | gitea_target
 ```
 
 * Sync other public or private repository (e.g. template repositories) with the current repository
