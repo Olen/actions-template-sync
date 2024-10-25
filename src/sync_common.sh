@@ -19,7 +19,9 @@ function err() {
 #   message to print.
 #######################################
 function debug() {
-  echo "🪲 $*";
+  if [ "${DEBUG}" == "true" ]; then
+    echo "🪲 $*";
+  fi
 }
 
 #######################################
@@ -110,5 +112,23 @@ function get_repo_user() {
     echo "${giturl}" | cut -d "/" -f 4
   else
     echo "${giturl}" | cut -d ":" -f 2 | cut -d "/" -f 1
+  fi
+}
+
+function get_repo_hostname() {
+  local giturl=$1
+  if [[ "$giturl" =~ ^http* ]]; then
+    echo "${giturl}" | cut -d "/" -f 3
+  else
+    echo "${giturl}" | cut -d "@" -f 2 | cut -d ":" -f 1
+  fi
+}
+
+function get_repo_protocol() {
+  local giturl=$1
+  if [[ "$giturl" =~ ^http* ]]; then
+    echo "http"
+  else
+    echo "ssh"
   fi
 }
