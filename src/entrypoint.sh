@@ -213,12 +213,12 @@ function git_init() {
   fi
   if [[ "${SOURCE_REPO_TYPE}" == "gitea" ]]; then
     base_url=$(echo "${SOURCE_REPO}" | cut -d "/" -f 1-3)
-    info "the source repository is in Gitea. Adding ${base_url} login to tea"
+    info "🍵 The source repository is in Gitea. Adding ${base_url} login to tea"
     tea login add --name source --url "${base_url}" --token "${SOURCE_REPO_TOKEN}"
   fi
   if [[ "${TARGET_REPO_TYPE}" == "gitea" ]]; then
     base_url=$(echo "${TARGET_REPO}" | cut -d "/" -f 1-3)
-    info "the target repository is in Gitea. Adding ${base_url} login to tea"
+    info "🍵 The target repository is in Gitea. Adding ${base_url} login to tea"
     tea login add --name target --url "${base_url}" --user "${GITHUB_USER}" --password "${GITHUB_TOKEN}" --token "${GITHUB_TOKEN}"
   fi
 
@@ -230,8 +230,8 @@ function git_init() {
 ###################################################
 
 if [[ "${TARGET_REPO_TYPE}" == 'gitea' ]]; then
-  info "The target repository is located in Gitea. Install tea."
-  wget -nv https://dl.gitea.com/tea/main/tea-main-linux-amd64 -O /usr/bin/tea
+  info "🍵 The target repository is located in Gitea. Install tea."
+  wget --non-verbose https://dl.gitea.com/tea/main/tea-main-linux-amd64 -O /usr/bin/tea
   chmod 755 /usr/bin/tea
 fi
 

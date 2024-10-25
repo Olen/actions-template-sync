@@ -123,7 +123,7 @@ function check_branch_remote_existing() {
 
   local branch_to_check=$1
 
-  info "check if the remote branch ${branch_to_check} exists. Exit if so"
+  info "Check if the remote branch ${branch_to_check} exists. Exit if so"
 
   git_activate_target_repo
   git ls-remote --exit-code --heads origin "${branch_to_check}" || branch_does_not_exist=true
@@ -133,6 +133,7 @@ function check_branch_remote_existing() {
     set_github_action_outputs "${branch_to_check}"
     exit 0
   fi
+  info "❎ remote branch does not exist"
 }
 
 #######################################
@@ -142,7 +143,7 @@ function check_branch_remote_existing() {
 #   template_remote_git_hash
 #######################################
 function check_if_commit_already_in_hist_graceful_exit() {
-  info "check if commit already in history"
+  info "Check if commit already in history"
 
   local template_remote_git_hash=$1
 
@@ -152,6 +153,7 @@ function check_if_commit_already_in_hist_graceful_exit() {
     info "✅ repository is up to date!"
     exit 0
   fi
+  info "❎ commit does not exist"
 }
 
 ##########################################
@@ -573,7 +575,6 @@ function arr_prechecks() {
 
 
 function arr_checkout_branch_and_pull() {
-  info "checkout branch and pull"
   cmd_from_yml "prepull"
 
   debug "::group::checkout branch and pull"
