@@ -72,7 +72,7 @@ GIT_USER_EMAIL="${GIT_USER_EMAIL:-github-action@actions-template-sync.noreply.${
 #   SRC_SSH_PRIVATEKEY_ABS_PATH
 #######################################
 function ssh_setup() {
-  echo "::group::ssh setup"
+  debug "::group::ssh setup"
 
   info "prepare ssh"
 
@@ -104,7 +104,7 @@ function ssh_setup() {
   # adjusting outer variable source repo prefix
   SOURCE_REPO_PREFIX="git@${source_repo_hostname}:"
 
-  echo "::endgroup::"
+  debug "::endgroup::"
 }
 
 #######################################
@@ -114,7 +114,7 @@ function ssh_setup() {
 #   git_user_email
 #######################################
 function gpg_setup() {
-  echo "::group::gpg setup"
+  debug "::group::gpg setup"
   info "start prepare gpg"
 
   local gpg_private_key=$1
@@ -139,7 +139,7 @@ function gpg_setup() {
   git config gpg.program "${SCRIPT_DIR}/gpg_no_tty.sh"
 
   info "done prepare gpg"
-  echo "::endgroup::"
+  debug "::endgroup::"
 }
 
 
@@ -181,7 +181,7 @@ function git_activate_target_repo() {
 #   source_repo_hostname
 #######################################
 function git_init() {
-  echo "::group::git init"
+  debug "::group::git init"
   info "set git global configuration"
 
   local git_user_email=$1
@@ -222,7 +222,7 @@ function git_init() {
     tea login add --name target --url "${base_url}" --user "${GITHUB_USER}" --password "${GITHUB_TOKEN}" --token "${GITHUB_TOKEN}"
   fi
 
-  echo "::endgroup::"
+  debug "::endgroup::"
 }
 
 ###################################################
