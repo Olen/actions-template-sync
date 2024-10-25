@@ -49,7 +49,7 @@ flowchart LR
 * Ignore files and folders from syncing using a `.templatesyncignore` file
 * many configuration options
 * different lifecycle hooks are supported. This opens the possibility to inject custom code into the workflow with a yaml definition file.
-* different git provider like GitLab, Gittea,.. as source are supported (with ssh).
+* different git provider like GitLab, Gitea,.. as source are supported (with ssh and http(s)).
   See [.github/workflows/test_ssh_gitlab.yml](.github/workflows/test_ssh_gitlab.yml) for an example.
 * It is not necessarily needed that source and target repository have the same base history.
   Because of that reason, it is possible to merge 2 totally different repositories with the help of the action.
@@ -259,6 +259,14 @@ jobs:
 | steps | `[optional] add the steps you want to execute within the action` | `false` | all steps will be executed |
 | template_sync_ignore_file_path | `[optional] set the path to the ignore file.` | false |`.templatesyncignore` |
 | is_with_tags | `[optional]` set to `true` if tags should be synced | `false` | `false` |
+| is_target_gitea | `[optional]` set to `true` if target repo is in gitea* | `false` | `false` |
+| source_repo | `[required]` URL to source repo | `true` |  |
+| source_repo_token | `[optional] Token to access private source repo | `false` |  |
+| github_user | `[optional] Username for target repo. Used for PR-creations etc | `false` | `${GITHUB_ACTOR}` |
+| debug | `[optional] Enable debug output from action runs | `false` | `false` |
+
+
+* The script will try to auto-detect source and target repo type, based on hostname and http-headers. The detection might fail, so you can set repo type manually
 
 ### Action Outputs
 
