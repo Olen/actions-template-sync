@@ -54,7 +54,6 @@ IS_KEEP_BRANCH_ON_PR_CLEANUP="${IS_KEEP_BRANCH_ON_PR_CLEANUP:-"false"}"
 GIT_REMOTE_PULL_PARAMS="${GIT_REMOTE_PULL_PARAMS:---allow-unrelated-histories --squash --strategy=recursive -X theirs}"
 
 
-# sleep 3600
 git_activate_source_repo
 TEMPLATE_REMOTE_GIT_HASH=$(git ls-remote "${SOURCE_REPO}" HEAD | awk '{print $1}')
 SHORT_TEMPLATE_GIT_HASH=$(git rev-parse --short "${TEMPLATE_REMOTE_GIT_HASH}")
@@ -84,7 +83,7 @@ debug "PR_BODY ${PR_BODY}"
 # Check if the Ignore File exists inside .github folder or if it doesn't exist at all
 if [[ -f ".github/${TEMPLATE_SYNC_IGNORE_FILE_PATH}" || ! -f "${TEMPLATE_SYNC_IGNORE_FILE_PATH}" ]]; then
   debug "using ignore file as in .github folder"
-    TEMPLATE_SYNC_IGNORE_FILE_PATH=".github/${TEMPLATE_SYNC_IGNORE_FILE_PATH}"
+  TEMPLATE_SYNC_IGNORE_FILE_PATH=".github/${TEMPLATE_SYNC_IGNORE_FILE_PATH}"
 fi
 
 #####################################################
@@ -150,7 +149,7 @@ function check_if_commit_already_in_hist_graceful_exit() {
   git_activate_target_repo
   git cat-file -e "${template_remote_git_hash}" || commit_not_in_hist=true
   if [ "${commit_not_in_hist}" != true ] ; then
-    warn "repository is up to date!"
+    info "✅ repository is up to date!"
     exit 0
   fi
 }
@@ -162,7 +161,7 @@ function check_if_commit_already_in_hist_graceful_exit() {
 function check_staged_files_available_graceful_exit() {
   git_activate_target_repo
   if git diff --quiet && git diff --staged --quiet; then
-    info "nothing to commit"
+    info "✅ nothing to commit"
     exit 0
   fi
 }
@@ -171,14 +170,15 @@ function check_staged_files_available_graceful_exit() {
 # force source file deletion if they had been deleted
 #######################################
 function force_delete_files() {
-  info "force delete files"
   warn "force file deletion is enabled. Deleting files which are deleted within the target repository"
   local_current_git_hash=$(git rev-parse HEAD)
 
-  info "current git hash: ${local_current_git_hash}"
+  debug "current git hash: ${local_current_git_hash}"
 
   files_to_delete=$(git log --diff-filter D --pretty="format:" --name-only "${local_current_git_hash}"..HEAD | sed '/^$/d')
   warn "files to delete: ${files_to_delete}"
+  # Add a short delay to allow the user to cancel the job if run manually
+  sleep 10
   if [[ -n "${files_to_delete}" ]]; then
     echo "${files_to_delete}" | xargs rm
   fi
@@ -253,7 +253,6 @@ function gitea_cleanup_older_prs () {
   local local_branch_name=$4
 
   local origin=$(git remote get-url origin)
-  DEST_REPO=$(echo $origin | cut -d "/" -f 1-3)
 
   readarray -t older_prs < <(tea pr list \
     --login "target" \
@@ -369,7 +368,6 @@ function eventual_create_labels () {
 function gitea_create_labels () {
   local pr_labels=$1
   local origin=$(git remote get-url origin)
-  DEST_REPO=$(echo $origin | cut -d "/" -f 1-3)
 
   readarray -t labels_array < <(awk -F',' '{ for( i=1; i<=NF; i++ ) print $i }' <<<"${pr_labels}")
   readarray -t search_result < <(tea label list --login "target" --output csv | cut -d "," -f 3 | tr -d \" | tail -n +2)
@@ -473,7 +471,6 @@ function gitea_create_pr() {
   local labels=$4
   local reviewers=$5
   local origin=$(git remote get-url origin)
-  DEST_REPO=$(echo $origin | cut -d "/" -f 1-3)
 
   info tea pr create \
     --login "target" \
