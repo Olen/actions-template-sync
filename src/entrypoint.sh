@@ -157,7 +157,7 @@ function add_git_cred_helpers() {
   echo "echo password=${SOURCE_REPO_TOKEN}" >> ${SOURCE_CRED_FILE}
 
   info "set git target cred configuration"
-  echo '#!/bin/bash' ${TARGET_CRED_FILE}
+  echo '#!/bin/bash' > ${TARGET_CRED_FILE}
   echo "sleep 1" >> ${TARGET_CRED_FILE}
   echo "echo username=${GITHUB_USER}" >> ${TARGET_CRED_FILE}
   echo "echo password=${GITHUB_TOKEN}" >> ${TARGET_CRED_FILE}
