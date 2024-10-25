@@ -150,13 +150,13 @@ function gpg_setup() {
 # for destination, we use gh/tea
 #######################################
 function add_git_cred_helpers() {
-  info "set git source cred configuration"
+  debug "create git source cred configuration"
   echo '#!/bin/bash' > ${SOURCE_CRED_FILE}
   echo "sleep 1" >> ${SOURCE_CRED_FILE}
   echo "echo username=${SOURCE_REPO_USER}" >> ${SOURCE_CRED_FILE}
   echo "echo password=${SOURCE_REPO_TOKEN}" >> ${SOURCE_CRED_FILE}
 
-  info "set git target cred configuration"
+  debug "create git target cred configuration"
   echo '#!/bin/bash' > ${TARGET_CRED_FILE}
   echo "sleep 1" >> ${TARGET_CRED_FILE}
   echo "echo username=${GITHUB_USER}" >> ${TARGET_CRED_FILE}
@@ -164,12 +164,12 @@ function add_git_cred_helpers() {
 }
 
 function git_activate_source_repo() {
-  info "set git source as active repo"
+  debug "set git source as active repo"
   git config --global credential.helper "/bin/bash ${SOURCE_CRED_FILE}"
 }
 
 function git_activate_target_repo() {
-  info "set git target as active repo"
+  debug "set git target as active repo"
   git config --global credential.helper "/bin/bash ${TARGET_CRED_FILE}"
 }
 
