@@ -252,24 +252,17 @@ function gitea_cleanup_older_prs () {
   local is_keep_branch_on_pr_cleanup=$3
   local local_branch_name=$4
 
-  local origin=$(git remote get-url origin)
-
   readarray -t older_prs < <(tea pr list \
     --login "target" \
     --state open \
     --output simple \
     --fields index,head)
 
-  debug "Older prs: $older_prs"
   for older_pr in "${older_prs[@]}"
   do
     debug "Older pr: $older_pr"
     pr_number=$(echo "$older_pr" | cut -d " " -f 1)
     branch_name=$(echo "$older_pr" | cut -d " " -f 2)
-    debug "Pr number $pr_number"
-    debug "Branch name $branch_name"
-
-    # sleep 3600
 
     if [ "$branch_name" == "$local_branch_name" ] ; then
       warn "local branch name equals remote pr branch name ${local_branch_name}. Skipping pr cleanup for this branch"
@@ -282,13 +275,11 @@ function gitea_cleanup_older_prs () {
       info "Closed PR #${older_pr} but kept the branch"
     else
       tea comment --login "target" $pr_number "[actions-template-sync] :construction_worker: Automatically closed because there is a new open PR" 
-      # remote_pr_branch=$(tea pr --login "target" --fields head --output simple --comments false ${pr_number})
       debug tea pr --login "target" close $pr_number
       tea pr --login "target" close $pr_number
       # info tea pr --login "target" clean $pr_number
       # tea pr --login "target" clean $pr_number
-      # For some reason tea pt clean does not work properly. We just use git-commands to do it
-      # https://www.freecodecamp.org/news/git-delete-remote-branch/
+      # For some reason `tea pr clean`` does not work properly. We just use git-commands to do it
       git fetch --all
       debug git push origin -d ${branch_name}
       git push origin -d ${branch_name}
@@ -361,13 +352,12 @@ function eventual_create_labels () {
 }
 
 #######################################
-# eventual create labels (if they are not existent).
+# Create labels in gitea (if they are not existent).
 # Arguments:
 #   pr_labels
 #######################################
 function gitea_create_labels () {
   local pr_labels=$1
-  local origin=$(git remote get-url origin)
 
   readarray -t labels_array < <(awk -F',' '{ for( i=1; i<=NF; i++ ) print $i }' <<<"${pr_labels}")
   readarray -t search_result < <(tea label list --login "target" --output csv | cut -d "," -f 3 | tr -d \" | tail -n +2)
@@ -470,17 +460,14 @@ function gitea_create_pr() {
   local branch=$3
   local labels=$4
   local reviewers=$5
-  local origin=$(git remote get-url origin)
 
-  info tea pr create \
+  debug tea pr create \
     --login "target" \
     --title "${title}" \
     --description "${body}" \
     --base "${branch}" \
     --labels "${labels}" \
     --assignees "${reviewers}" || create_pr_has_issues=true
-
-  # sleep 3600
 
   tea pr create \
     --login "target" \
