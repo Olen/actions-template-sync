@@ -6,8 +6,7 @@ FROM alpine:3.20.3 AS prod
 ARG GH_CLI_VER=2.44.1
 
 # TODO(anau) change user
-# ARG GITHUB_URL="https://github.com/AndreasAugustin/actions-template-sync"
-ARG GITHUB_URL="https://github.com/Olen/actions-template-sync@gitea"
+ARG GITHUB_URL="https://github.com/AndreasAugustin/actions-template-sync"
 
 # https://github.com/opencontainers/image-spec/blob/main/annotations.md#pre-defined-annotation-keys
 LABEL org.opencontainers.image.url="${GITHUB_URL}"
@@ -19,7 +18,7 @@ LABEL org.opencontainers.image.title="actions-template-sync image"
 LABEL org.opencontainers.image.description="contains actions-template-sync"
 
 # install packages
-RUN apk add --update --no-cache bash git curl musl openssh git-lfs yq gnupg tea
+RUN apk add --update --no-cache bash git curl musl openssh git-lfs yq gnupg
 
 RUN wget https://github.com/cli/cli/releases/download/v${GH_CLI_VER}/gh_${GH_CLI_VER}_linux_386.tar.gz -O ghcli.tar.gz
 RUN tar --strip-components=1 -xf ghcli.tar.gz
@@ -40,7 +39,7 @@ ENTRYPOINT ["/bin/bash", "/bin/entrypoint.sh"]
 FROM prod AS dev
 
 # install packages
-RUN apk add --update --no-cache make zsh tmux vim tig tea
+RUN apk add --update --no-cache make zsh tmux vim tig
 
 # Make zsh your default shell for tmux
 RUN echo "set-option -g default-shell /bin/zsh" >> /root/.tmux.conf
@@ -58,7 +57,7 @@ ENTRYPOINT ["/bin/zsh"]
 FROM node:23.0.0-alpine AS docs
 
 # install packages
-RUN apk add --update --no-cache bash make git zsh curl tmux tea
+RUN apk add --update --no-cache bash make git zsh curl tmux
 
 # Make zsh your default shell for tmux
 RUN echo "set-option -g default-shell /bin/zsh" >> /root/.tmux.conf
