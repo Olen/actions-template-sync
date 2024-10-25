@@ -36,18 +36,12 @@ This action is creating a pull request with the latest changes within the target
 ```mermaid
 flowchart LR
     github_source("fa:fa-github <b>GitHub</b> source repository <b>[private|public]</b>")
-    gitlab_source("fa:fa-gitlab <b>GitLab</b> source repository <b>[private|public]</b>")
-    gitea_source("fa:fa-gitea <b>Gitea</b> source repository <b>[private|public]</b>")
-    any_source("fa:fa-git <b>Any</b> git provider <b>[private|public]</b>")
+    any_source("fa:fa-git <b>Any</b> git provider (Gitlab, Gitea etc) <b>[private|public]</b>")
     github_target{{"fa:fa-github <b>GitHub</b> target repository <b>[private|public]</b>"}}
     gitea_target{{"fa:fa-gitea <b>Gitea</b> target repository <b>[private|public]</b>"}}
     github_source --> |"<b>ssh | PAT | github app</b>"| github_target
-    gitlab_source --> |"<b>ssh | http(s)</b>" | github_target
-    gitea_source --> |"<b>ssh | http(s)</b>" | github_target
     any_source --> |"<b>ssh | |http(s)</b>" | github_target
-    github_source --> |"<b>ssh | PAT | github app</b>"| gitea_target
-    gitlab_source --> |"<b>ssh | http(s)</b>" | gitea_target
-    gitea_source --> |"<b>ssh | http(s)</b>" | gitea_target
+    github_source --> |"<b>ssh | http(s)</b>" | gitea_target
     any_source --> |"<b>ssh | http(s)</b>" | gitea_target
 ```
 
