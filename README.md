@@ -42,13 +42,13 @@ flowchart LR
     github_target{{"fa:fa-github <b>GitHub</b> target repository <b>[private|public]</b>"}}
     gitea_target{{"fa:fa-gitea <b>Gitea</b> target repository <b>[private|public]</b>"}}
     github_source --> |"<b>ssh | PAT | github app</b>"| github_target
-    gitlab_source --> |"<b>ssh</b>"| http(s) | github_target
-    gitea_source --> |"<b>ssh</b>"| http(s) | github_target
-    any_source --> |"<b>ssh</b>"| |http(s) | github_target
+    gitlab_source --> |"<b>ssh | http(s)</b>" | github_target
+    gitea_source --> |"<b>ssh | http(s)</b>" | github_target
+    any_source --> |"<b>ssh | |http(s)</b>" | github_target
     github_source --> |"<b>ssh | PAT | github app</b>"| gitea_target
-    gitlab_source --> |"<b>ssh</b>"| http(s) | gitea_target
-    gitea_source --> |"<b>ssh</b>"| http(s) | gitea_target
-    any_source --> |"<b>ssh</b>"| |http(s) | gitea_target
+    gitlab_source --> |"<b>ssh | http(s)</b>" | gitea_target
+    gitea_source --> |"<b>ssh | http(s)</b>" | gitea_target
+    any_source --> |"<b>ssh | http(s)</b>" | gitea_target
 ```
 
 * Sync other public or private repository (e.g. template repositories) with the current repository
