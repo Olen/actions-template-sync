@@ -23,9 +23,13 @@ if [[ -z "${SOURCE_REPO}" ]]; then
   exit 1;
 fi
 
-if ! [ -x "$(command -v gh)" ]; then
-  err "github-cli gh is not installed. 'https://github.com/cli/cli'";
-  exit 1;
+# gh is only used for a GitHub source (auth) and a non-Gitea target (PRs, labels); the Gitea paths use tea.
+# Same tests as those code paths, so the check can never disagree with them.
+if [[ "${SOURCE_REPO_TYPE}" == "github" ]] || ! [[ "${IS_TARGET_GITEA}" ]]; then
+  if ! [ -x "$(command -v gh)" ]; then
+    err "github-cli gh is not installed. 'https://github.com/cli/cli'";
+    exit 1;
+  fi
 fi
 
 if [[ -z "${TEMPLATE_SYNC_IGNORE_FILE_PATH}" ]]; then
